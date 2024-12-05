@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Cute chọn đồ ăn</title>
+    <link rel="icon" href="favicon.ico" type="image/x-icon" />
+    <link rel="stylesheet" href="css/food.css" />
+    <!-- Import Firebase SDK 9 modules -->
+    <script type="module">
+      import { initializeApp } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-app.js";
+      import { getDatabase, ref, push } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-database.js";
+
+      // Cấu hình Firebase
+      const firebaseConfig = {
+        apiKey: "AIzaSyA7RLRXJie8CuieGbCw55OHUZuCkjfcbgY",
+        authDomain: "datewithnoc.firebaseapp.com",
+        databaseURL: "https://datewithnoc-default-rtdb.asia-southeast1.firebasedatabase.app",
+        projectId: "datewithnoc",
+        storageBucket: "datewithnoc.appspot.com",
+        messagingSenderId: "524265966270",
+        appId: "1:524265966270:web:45b0a5e5853ec47437acef",
+        measurementId: "G-6FP4EJR4XL",
+      };
+
+      // Khởi tạo Firebase
+      const app = initializeApp(firebaseConfig);
+      const database = getDatabase(app);
+
+      // Gửi dữ liệu về Firebase khi nhấn Submit
+      document.getElementById("submitButton").onclick = function () {
+        const foodSelections = document.querySelectorAll('input[name="food"]:checked');
+        const newFoodName = document.getElementById("newFoodName").value;
+
+        const selectedFoods = Array.from(foodSelections).map(input => input.value);
+
+        // Thêm dữ liệu vào Firebase Realtime Database
+        push(ref(database, 'food'), {
+          selectedFoods,
+          newFoodName
+        })
+          .then(() => {
+            window.location.href = "dessert.html"; // Chuyển sang trang tiếp theo
+          })
+          .catch(error => {
+            console.error("Error submitting data: ", error);
+          });
+      };
+    </script>
+  </head>
+  <body>
+    <div id="foodquestion">
+      <b>Chọn món mà bạn thích nèee?</b>
+    </div>
+
+    <div class="food-selection">
+      <div class="food-item">
+        <img src="food/bunrieu.jpeg" alt="Bún Riêu" />
+        <label>
+          <input type="checkbox" name="food" value="bunrieu" />
+          Bún Riêu
+        </label>
+      </div>
+      <div class="food-item">
+        <img src="food/namnuong.jpeg" alt="Nầm Nướng" />
+        <label>
+          <input type="checkbox" name="food" value="namnuong" />
+          Nầm Nướng
+        </label>
+      </div>
+      <div class="food-item">
+        <img src="food/buncha.jpeg" alt="Bún Chả" />
+        <label>
+          <input type="checkbox" name="food" value="buncha" />
+          Bún Chả
+        </label>
+      </div>
+      <div class="food-item">
+        <img src="food/sabichuong.jpeg" alt="Sà Bì Chưởng" />
+        <label>
+          <input type="checkbox" name="food" value="sabichuong" />
+          Sà Bì Chưởng
+        </label>
+      </div>
+      <div class="food-item">
+        <img src="food/bunbohue.jpeg" alt="Bún Bò Huế" />
+        <label>
+          <input type="checkbox" name="food" value="bunbohue" />
+          Bún Bò Huế
+        </label>
+      </div>
+      <div class="food-item">
+        <img src="food/lauthai.jpeg" alt="Lẩu thái" />
+        <label>
+          <input type="checkbox" name="food" value="lauthai" />
+          Lẩu thái
+        </label>
+      </div>
+      <div class="food-item">
+        <img src="food/chaosuon.jpeg" alt="Cháo Sường" />
+        <label>
+          <input type="checkbox" name="food" value="chaosuon" />
+          Cháo Sườn
+        </label>
+      </div>
+      <div class="food-item">
+        <img src="food/bundaumamtom.jpeg" alt="Bún Đậu Mắm Tôm" />
+        <label>
+          <input type="checkbox" name="food" value="bundaumamtom" />
+          Bún Đậu Mắm Tôm
+        </label>
+      </div>
+    </div>
+
+    <div class="add-food">
+      <input type="text" id="newFoodName" placeholder="Nhập món bạn thích" />
+    </div>
+
+    <button id="submitButton">Tiếp UWU</button>
+  </body>
+</html>

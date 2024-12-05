@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" href="favicon.ico" type="image/x-icon" />
+    <title>Pick a date</title>
+    <link rel="stylesheet" href="css/date.css" />
+  </head>
+  <body>
+    <h1 title="choose a date">Bạn chọn ngày điiiiii </h1>
+    <form class="form-group" id="dateForm">
+      <label>Ngày nào: (chọn ngày)</label>
+      <div>
+        <input type="date" id="selectedDate" required />
+        <button class="button" type="submit">
+          Tiếp tục nèee
+        </button>
+      </div>
+    </form>
+
+    <script type="module">
+      // Firebase SDK
+      import { initializeApp } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-app.js";
+      import { getDatabase, ref, push } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-database.js";
+
+      // Cấu hình Firebase
+      const firebaseConfig = {
+      apiKey: "AIzaSyA7RLRXJie8CuieGbCw55OHUZuCkjfcbgY",
+      authDomain: "datewithnoc.firebaseapp.com",
+      databaseURL: "https://datewithnoc-default-rtdb.asia-southeast1.firebasedatabase.app", // URL chính xác
+      projectId: "datewithnoc",
+      storageBucket: "datewithnoc.appspot.com",
+      messagingSenderId: "524265966270",
+      appId: "1:524265966270:web:45b0a5e5853ec47437acef",
+      measurementId: "G-6FP4EJR4XL"
+    };
+
+
+      // Khởi tạo Firebase
+      const app = initializeApp(firebaseConfig);
+      const database = getDatabase(app);
+
+      // Hàm gửi ngày tháng và chuyển hướng
+      document.getElementById("dateForm").addEventListener("submit", function(event) {
+        event.preventDefault(); // Ngừng việc gửi form mặc định
+
+        const selectedDate = document.getElementById("selectedDate").value;
+
+        if (selectedDate) {
+          // Gửi dữ liệu ngày tháng vào Firebase
+          push(ref(database, "dateResponses"), {
+            selectedDate: selectedDate
+          })
+            .then(() => {
+              window.location.href = 'food.html'; // Chuyển hướng sau khi lưu
+            })
+            .catch((error) => {
+              console.error("Lỗi khi lưu ngày: ", error);
+              alert('Lỗi khi lưu ngày, vui lòng thử lại!');
+            });
+        } else {
+          alert('Vui lòng chọn một ngày!');
+        }
+      });
+    </script>
+  </body>
+</html>

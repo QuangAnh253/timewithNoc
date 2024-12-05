@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Thank Noccc</title>
+  <link rel="stylesheet" href="css/lastpage.css" />
+  <link rel="icon" href="favicon.ico" type="image/x-icon" />
+</head>
+<body>
+  <div id="thankyou"><b>Ỏooooo</b></div>
+  <iframe
+    src="https://giphy.com/embed/3o7TKpYV4a65CMhRKg"
+    width="480"
+    height="269"
+    style="border: none;"
+    frameborder="0"
+    class="giphy-embed"
+    allowfullscreen>
+  </iframe>
+  <p>
+    <a href="https://giphy.com/gifs/nickatnite-cat-garfield-movie-3o7TKpYV4a65CMhRKg"></a>
+  </p>
+
+  <br />
+
+  <!-- Thêm id="myAudio" -->
+  <audio id="myAudio" controls loop>
+    <source src="YoungandBeautiful.mp3" type="audio/mpeg" />
+    Your browser does not support the audio element.
+  </audio>
+
+  <script>
+    const audio = document.getElementById("myAudio");
+
+    // Giây bắt đầu
+    const startTimeInSeconds = 30;
+
+    // Khi audio sẵn sàng, đặt thời gian bắt đầu và phát nhạc
+    audio.addEventListener("canplay", () => {
+      if (audio.currentTime < startTimeInSeconds) {
+        audio.currentTime = startTimeInSeconds;
+      }
+      audio.play();
+    });
+
+    // Đảm bảo nhạc không tự tắt/bật
+    audio.addEventListener("timeupdate", () => {
+      if (audio.currentTime < startTimeInSeconds) {
+        audio.currentTime = startTimeInSeconds;
+      }
+    });
+  </script>
+
+  <h1>Siêu bất ngờ tặng bạn</h1>
+  <button class="button" onclick="location.href='date.html'">
+    Ấn ở đây nè bạn đẹp UWU
+  </button>
+</body>
+</html>

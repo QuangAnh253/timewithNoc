@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Đi đâu nè</title>
+    <link rel="icon" href="favicon.ico" type="image/x-icon" />
+    <link rel="stylesheet" href="css/activities.css" />
+
+    <!-- Thêm Firebase SDK dạng compat -->
+    <script src="https://www.gstatic.com/firebasejs/9.19.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.19.1/firebase-database-compat.js"></script>
+
+    <script>
+      // Cấu hình Firebase
+      const firebaseConfig = {
+        apiKey: "AIzaSyA7RLRXJie8CuieGbCw55OHUZuCkjfcbgY",
+        authDomain: "datewithnoc.firebaseapp.com",
+        databaseURL: "https://datewithnoc-default-rtdb.asia-southeast1.firebasedatabase.app",
+        projectId: "datewithnoc",
+        storageBucket: "datewithnoc.appspot.com",
+        messagingSenderId: "524265966270",
+        appId: "1:524265966270:web:45b0a5e5853ec47437acef",
+        measurementId: "G-6FP4EJR4XL",
+      };
+
+      // Khởi tạo Firebase
+      firebase.initializeApp(firebaseConfig);
+
+      const database = firebase.database();
+
+      // Hàm gửi dữ liệu lên Firebase
+      function submitActivities() {
+        const selectedActivities = Array.from(
+          document.querySelectorAll('input[name="activities"]:checked')
+        ).map((el) => el.value);
+        const additionalActivity = document.getElementById("newActivitiesName").value;
+        const confession = document.getElementById("confession").value;
+
+        // Gửi dữ liệu lên Firebase
+        firebase
+          .database()
+          .ref("activitiesResponses")
+          .push({
+            selectedActivities: selectedActivities,
+            additionalActivity: additionalActivity,
+            confession: confession,
+          })
+          .then(() => {
+            window.location.href = "lastpage.html"; // Chuyển sang trang cuối
+          })
+          .catch((error) => {
+            console.error("Lỗi khi lưu dữ liệu: ", error);
+          });
+      }
+    </script>
+  </head>
+  <body>
+    <div id="activityquestion"><b>Bạn muốn chúng ta đi đâu?</b></div>
+
+    <div class="activities-selection">
+      <div class="activity-item">
+        <img src="activities/aquarium.jpeg" alt="Aquarium" />
+        <label><input type="checkbox" name="activities" value="aquarium" /> Thủy cung</label>
+      </div>
+      <div class="activity-item">
+        <img src="activities/arcade.jpeg" alt="Arcade" />
+        <label><input type="checkbox" name="activities" value="arcade" /> Trò chơi</label>
+      </div>
+      <div class="activity-item">
+        <img src="activities/cinema.jpeg" alt="Cinema" />
+        <label><input type="checkbox" name="activities" value="cinema" /> Xem phim</label>
+      </div>
+      <div class="activity-item">
+        <img src="activities/workshop.jpeg" alt="Workshop" />
+        <label><input type="checkbox" name="activities" value="workshop" /> Workshop</label>
+      </div>
+      <div class="activity-item">
+        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSG6_AAuWVt5Q94mKLH50gMPUWKU0kxfzSJfA&s" alt="Park" />
+        <label><input type="checkbox" name="activities" value="park" /> Dạo phố</label>
+      </div>
+    </div>
+
+    <div class="add-activities">
+      <input type="text" id="newActivitiesName" placeholder="Nhập nơi bạn muốn đến" />
+    </div>
+
+    <div class="add-confession">
+      <input type="text" id="confession" placeholder="Bạn có gì muốn gửi tới mình không?" />
+    </div>
+
+    <!-- Gọi hàm submitActivities() khi nhấn nút -->
+    <button class="button" onclick="submitActivities()">Ấn đây là xonggg</button>
+  </body>
+</html>

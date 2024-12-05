@@ -1,0 +1,116 @@
+body {
+  text-align: center;
+  margin-top: 30px;
+  font-family: courier;
+  background-color: #fff5e4;
+  color: #ff9494;
+}
+
+#foodquestion {
+  font-size: 50px;
+  margin-bottom: 30px;
+  font-weight: bold;
+}
+
+.food-selection {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-bottom: 30px;
+}
+
+.food-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 10px;
+  color: #ff9494;
+}
+
+.food-item img {
+  height: 150px;
+  width: 150px;
+  border-radius: 50%;
+  border: 5px solid #ff9494;
+  object-fit: cover;
+  padding: 10px;
+}
+
+.food-item label {
+  margin-top: 10px;
+  font-size: 20px;
+}
+
+.add-food input[type="text"] {
+  width: 80%; /* Đặt chiều rộng của input để không bị quá dài */
+  padding: 10px; /* Tăng thêm khoảng cách bên trong input */
+  font-size: 16px; /* Đảm bảo kích thước chữ phù hợp */
+  cursor: pointer;
+  margin: 10px 0;
+  font-family: "courier";
+  background-color: #ffe3e1;
+  color: #e67373;
+  border-radius: 12px;
+  border: 2px solid #ffe3e1;
+  box-sizing: border-box; /* Đảm bảo padding không làm input bị rộng quá */
+  max-width: 500px; /* Giới hạn chiều rộng tối đa của input */
+}
+
+.add-food input[type="text"]:focus {
+  outline: none;
+  border: 2px solid #ff9494;
+  background-color: #ffe3e1;
+  color: #ff9494;
+}
+
+
+#newFoodName {
+  padding: 6px 10px;
+  font-size: 18px;
+  cursor: pointer;
+  margin: 10px;
+  font-family: "courier";
+  background-color: #ffe3e1;
+  color: #e67373;
+  border-radius: 12px;
+  border: 2px solid #ffe3e1;
+  width: 80%;
+}
+
+#newFoodName:focus {
+  outline: none;
+  border: 2px solid #ff9494;
+  background-color: #ffe3e1;
+  color: #ff9494;
+}
+
+#submitButton {
+  padding: 10px 20px;
+  font-size: 18px;
+  cursor: pointer;
+  margin: 20px;
+  font-family: "courier";
+  background-color: #ffe3e1;
+  color: #e67373;
+  border-radius: 12px;
+  border: 2px solid #ffe3e1;
+  transition: 0.3s;
+  width: 200px;
+}
+
+#submitButton:hover {
+  background-color: #ff9494;
+  color: #ffe3e1;
+  border: 2px solid #ff9494;
+}
+
+input[type="checkbox"] {
+  margin: 10px;
+  transform: scale(1.3);
+}
+
+label {
+  font-size: 20px;
+  margin-bottom: 5px;
+  color: #ff9494;
+}

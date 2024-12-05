@@ -1,0 +1,15 @@
+{
+  "name": "date-main",
+  "version": "1.0.0",
+  "description": "Được tham khảo từ https://github.com/phamvulinh18 Bản cập nhật này được đính kèm thêm database qua firebase",
+  "main": "firebase.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "firebase": "^11.0.2"
+  }
+}

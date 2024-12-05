@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Dessert</title>
+    <link rel="icon" href="favicon.ico" type="image/x-icon" />
+    <link rel="stylesheet" href="css/dessert.css" />
+
+    <!-- Thêm Firebase SDK dạng compat -->
+    <script src="https://www.gstatic.com/firebasejs/9.19.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.19.1/firebase-database-compat.js"></script>
+
+    <script>
+      // Cấu hình Firebase
+      const firebaseConfig = {
+        apiKey: "AIzaSyA7RLRXJie8CuieGbCw55OHUZuCkjfcbgY",
+        authDomain: "datewithnoc.firebaseapp.com",
+        databaseURL: "https://datewithnoc-default-rtdb.asia-southeast1.firebasedatabase.app",
+        projectId: "datewithnoc",
+        storageBucket: "datewithnoc.appspot.com",
+        messagingSenderId: "524265966270",
+        appId: "1:524265966270:web:45b0a5e5853ec47437acef",
+        measurementId: "G-6FP4EJR4XL",
+      };
+
+      // Khởi tạo Firebase
+      firebase.initializeApp(firebaseConfig);
+
+      const database = firebase.database();
+
+      // Hàm gửi dữ liệu lên Firebase
+      function submitDessert() {
+        const selectedDesserts = Array.from(document.querySelectorAll('input[name="dessert"]:checked')).map(el => el.value);
+        const additionalDessert = document.getElementById("newFoodName").value;
+
+        // Gửi dữ liệu lên Firebase
+        firebase.database().ref("dessertResponses").push({
+          selectedDesserts: selectedDesserts,
+          additionalDessert: additionalDessert
+        })
+        .then(() => {
+          window.location.href = 'activities.html'; // Chuyển qua trang tiếp theo
+        })
+        .catch((error) => {
+          console.error("Lỗi khi lưu dữ liệu: ", error);
+        });
+      }
+    </script>
+  </head>
+  <body>
+    <div id="dessertquestion">Ăn tráng miệng</div>
+
+    <div class="dessert-selection">
+      <div class="dessert-item">
+        <img src="food/banhca.jpeg" alt="Bánh cá" />
+        <label><input type="checkbox" name="dessert" value="banhca" /> Bánh cá</label>
+      </div>
+      <div class="dessert-item">
+        <img src="food/che.jpeg" alt="Chè" />
+        <label><input type="checkbox" name="dessert" value="che" /> Chè</label>
+      </div>
+      <div class="dessert-item">
+        <img src="food/kem.jpeg" alt="Kem" />
+        <label><input type="checkbox" name="dessert" value="kem" /> Kem</label>
+      </div>
+      <div class="dessert-item">
+        <img src="food/tauhu.jpeg" alt="Tàu hũ" />
+        <label><input type="checkbox" name="dessert" value="tauhu" /> Tàu hũ</label>
+      </div>
+      <div class="dessert-item">
+        <img src="food/mochi.jpeg" alt="Mochi" />
+        <label><input type="checkbox" name="dessert" value="mochi" /> Mochi</label>
+      </div>
+      <div class="dessert-item">
+        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT_ctKFokkPgH6MChNK4U5FdjJalxzIwSzUtA&s" alt="Random" />
+        <label><input type="checkbox" name="dessert" value="trasua" /> Tà tữaaaa</label>
+      </div>
+      <div class="add-food">
+        <input type="text" id="newFoodName" placeholder="Nhập món bạn thích" />
+      </div>
+    </div>
+
+    <!-- Nút Submit kết nối với hàm submitDessert() -->
+    <button class="button" onclick="submitDessert()">Sắp xong rùiii UWU</button>
+  </body>
+</html>
