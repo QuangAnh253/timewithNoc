@@ -5,16 +5,19 @@ body {
   background-color: #fff5e4;
   color: #ff9494;
 }
+
 #activityquestion {
   font-size: 50px;
   margin-bottom: 30px;
 }
+
 .activity-item {
   display: inline-block;
   margin: 10px;
   vertical-align: top;
   color: #ff9494;
 }
+
 .activity-item img {
   height: 200px;
   width: 200px;
@@ -23,9 +26,11 @@ body {
   object-fit: cover;
   padding: 10px;
 }
+
 .activity-item label {
   display: block;
 }
+
 .button {
   padding: 10px 20px;
   font-size: 18px;
@@ -38,7 +43,6 @@ body {
   border-radius: 12px;
   border: 2px solid #ffe3e1;
 }
-
 
 h1 {
   font-size: 40px;
@@ -105,16 +109,17 @@ label {
   color: #ff9494;
 }
 
-.add-confession {
+.add-confession, .add-activities {
   display: flex;
   flex-direction: column;
   align-items: center;
+  margin-bottom: 20px;
 }
 
-.add-confession input[type="text"] {
-  width: 80%;
+.add-activities input[type="text"], .add-confession input[type="text"] {
+  width: 90%;
   max-width: 400px;
-  padding: 10px;
+  padding: 12px 15px;
   font-size: 16px;
   color: #e67373;
   background-color: #ffe3e1;
@@ -122,16 +127,29 @@ label {
   border-radius: 12px;
   outline: none;
   box-sizing: border-box;
+  margin: 10px 0;
 }
 
-.add-confession input[type="text"]::placeholder {
+.add-activities input[type="text"]::placeholder, .add-confession input[type="text"]::placeholder {
   color: #e67373;
   font-size: 16px;
   text-align: center;
   white-space: normal; /* Để đảm bảo nội dung placeholder xuống dòng nếu cần */
 }
 
-.add-confession input[type="text"]:focus {
+.add-activities input[type="text"]:focus, .add-confession input[type="text"]:focus {
   border-color: #ff9494;
   background-color: #ffe3e1;
+}
+
+@media (max-width: 600px) {
+  .add-activities input[type="text"], .add-confession input[type="text"] {
+    width: 100%;
+    font-size: 14px;
+    padding: 10px;
+  }
+  
+  .add-activities input[type="text"]::placeholder, .add-confession input[type="text"]::placeholder {
+    font-size: 14px;
+  }
 }

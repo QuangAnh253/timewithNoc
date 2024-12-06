@@ -7,11 +7,11 @@
     <link rel="icon" href="favicon.ico" type="image/x-icon" />
     <link rel="stylesheet" href="css/dessert.css" />
 
-    <!-- Thêm Firebase SDK dạng compat -->
-    <script src="https://www.gstatic.com/firebasejs/9.19.1/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.19.1/firebase-database-compat.js"></script>
-
-    <script>
+    <!-- Import Firebase SDK 9 modules -->
+    <script type="module">
+      import { initializeApp } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-app.js";
+      import { getDatabase, ref, set } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-database.js";
+    
       // Cấu hình Firebase
       const firebaseConfig = {
         apiKey: "AIzaSyA7RLRXJie8CuieGbCw55OHUZuCkjfcbgY",
@@ -23,30 +23,50 @@
         appId: "1:524265966270:web:45b0a5e5853ec47437acef",
         measurementId: "G-6FP4EJR4XL",
       };
-
+    
       // Khởi tạo Firebase
-      firebase.initializeApp(firebaseConfig);
-
-      const database = firebase.database();
-
-      // Hàm gửi dữ liệu lên Firebase
-      function submitDessert() {
-        const selectedDesserts = Array.from(document.querySelectorAll('input[name="dessert"]:checked')).map(el => el.value);
-        const additionalDessert = document.getElementById("newFoodName").value;
-
-        // Gửi dữ liệu lên Firebase
-        firebase.database().ref("dessertResponses").push({
-          selectedDesserts: selectedDesserts,
-          additionalDessert: additionalDessert
-        })
-        .then(() => {
-          window.location.href = 'activities.html'; // Chuyển qua trang tiếp theo
-        })
-        .catch((error) => {
-          console.error("Lỗi khi lưu dữ liệu: ", error);
-        });
+      const app = initializeApp(firebaseConfig);
+      const database = getDatabase(app);
+    
+      // Hàm tạo ID duy nhất dựa trên thời gian
+      function generateTimeBasedID() {
+        const now = new Date();
+        const datePart =
+          now.getFullYear().toString() +
+          (now.getMonth() + 1).toString().padStart(2, '0') +
+          now.getDate().toString().padStart(2, '0') +
+          now.getHours().toString().padStart(2, '0') +
+          now.getMinutes().toString().padStart(2, '0') +
+          now.getSeconds().toString().padStart(2, '0');
+        const randomPart = Math.floor(Math.random() * 900 + 100);
+        return datePart + randomPart.toString();
       }
+    
+      // Hàm gửi dữ liệu lên Firebase
+      document.getElementById("submitButton").onclick = function () {
+        const dessertSelections = document.querySelectorAll('input[name="dessert"]:checked');
+        const newDessertName = document.getElementById("newFoodName").value;
+    
+        const selectedDesserts = Array.from(dessertSelections).map(input => input.value);
+    
+        // Tạo ID mới cho dữ liệu
+        const id = generateTimeBasedID();
+    
+        // Thêm dữ liệu vào Firebase Realtime Database
+        set(ref(database, 'dessert/' + id), { // Sử dụng set thay vì push và gắn ID thủ công
+          id: id, // Gắn ID duy nhất vào dữ liệu
+          selectedDesserts: selectedDesserts,
+          newDessertName: newDessertName || "Không nhập"
+        })
+          .then(() => {
+            window.location.href = "activities.html"; // Chuyển sang trang tiếp theo
+          })
+          .catch(error => {
+            console.error("Lỗi khi gửi dữ liệu: ", error);
+          });
+      };
     </script>
+    
   </head>
   <body>
     <div id="dessertquestion">Ăn tráng miệng</div>
@@ -73,15 +93,18 @@
         <label><input type="checkbox" name="dessert" value="mochi" /> Mochi</label>
       </div>
       <div class="dessert-item">
-        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT_ctKFokkPgH6MChNK4U5FdjJalxzIwSzUtA&s" alt="Random" />
+        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT_ctKFokkPgH6MChNK4U5FdjJalxzIwSzUtA&s" alt="Trà sữa" />
         <label><input type="checkbox" name="dessert" value="trasua" /> Tà tữaaaa</label>
-      </div>
-      <div class="add-food">
-        <input type="text" id="newFoodName" placeholder="Nhập món bạn thích" />
       </div>
     </div>
 
+    <div class="add-food">
+      <input type="text" id="newFoodName" placeholder="Nhập món bạn thích" />
+    </div>
+
     <!-- Nút Submit kết nối với hàm submitDessert() -->
-    <button class="button" onclick="submitDessert()">Sắp xong rùiii UWU</button>
+    <button id="submitButton" class="button">Sắp xong rùiii UWU</button>
+
+    <script src="js/script.js"></script>
   </body>
 </html>

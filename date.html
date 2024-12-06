@@ -22,34 +22,51 @@
     <script type="module">
       // Firebase SDK
       import { initializeApp } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-app.js";
-      import { getDatabase, ref, push } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-database.js";
+      import { getDatabase, ref, set } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-database.js";
 
       // Cấu hình Firebase
       const firebaseConfig = {
-      apiKey: "AIzaSyA7RLRXJie8CuieGbCw55OHUZuCkjfcbgY",
-      authDomain: "datewithnoc.firebaseapp.com",
-      databaseURL: "https://datewithnoc-default-rtdb.asia-southeast1.firebasedatabase.app", // URL chính xác
-      projectId: "datewithnoc",
-      storageBucket: "datewithnoc.appspot.com",
-      messagingSenderId: "524265966270",
-      appId: "1:524265966270:web:45b0a5e5853ec47437acef",
-      measurementId: "G-6FP4EJR4XL"
-    };
-
+        apiKey: "AIzaSyA7RLRXJie8CuieGbCw55OHUZuCkjfcbgY",
+        authDomain: "datewithnoc.firebaseapp.com",
+        databaseURL: "https://datewithnoc-default-rtdb.asia-southeast1.firebasedatabase.app",
+        projectId: "datewithnoc",
+        storageBucket: "datewithnoc.appspot.com",
+        messagingSenderId: "524265966270",
+        appId: "1:524265966270:web:45b0a5e5853ec47437acef",
+        measurementId: "G-6FP4EJR4XL"
+      };
 
       // Khởi tạo Firebase
       const app = initializeApp(firebaseConfig);
       const database = getDatabase(app);
 
+      // Hàm tạo ID dựa trên thời gian
+      function generateTimeBasedID() {
+        const now = new Date();
+        const datePart =
+          now.getFullYear().toString() +
+          (now.getMonth() + 1).toString().padStart(2, '0') +
+          now.getDate().toString().padStart(2, '0') +
+          now.getHours().toString().padStart(2, '0') +
+          now.getMinutes().toString().padStart(2, '0') +
+          now.getSeconds().toString().padStart(2, '0');
+        const randomPart = Math.floor(Math.random() * 900 + 100);
+        return datePart + randomPart.toString();
+      }
+
       // Hàm gửi ngày tháng và chuyển hướng
-      document.getElementById("dateForm").addEventListener("submit", function(event) {
+      document.getElementById("dateForm").addEventListener("submit", function (event) {
         event.preventDefault(); // Ngừng việc gửi form mặc định
 
         const selectedDate = document.getElementById("selectedDate").value;
 
         if (selectedDate) {
-          // Gửi dữ liệu ngày tháng vào Firebase
-          push(ref(database, "dateResponses"), {
+          // Tạo ID mới cho dữ liệu
+          const id = generateTimeBasedID();
+
+          // Gửi dữ liệu ngày tháng và ID vào Firebase, sử dụng ID làm key
+          set(ref(database, "dateResponses/" + id), {
+            id: id, // Lưu lại ID trong dữ liệu (tùy chọn)
             selectedDate: selectedDate
           })
             .then(() => {
@@ -64,5 +81,7 @@
         }
       });
     </script>
+
+    <script src="js/script.js"></script>
   </body>
 </html>

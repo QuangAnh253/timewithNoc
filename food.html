@@ -3,14 +3,15 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Cute chọn đồ ăn</title>
+    <title>Food</title>
     <link rel="icon" href="favicon.ico" type="image/x-icon" />
     <link rel="stylesheet" href="css/food.css" />
+
     <!-- Import Firebase SDK 9 modules -->
     <script type="module">
       import { initializeApp } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-app.js";
-      import { getDatabase, ref, push } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-database.js";
-
+      import { getDatabase, ref, set } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-database.js";
+    
       // Cấu hình Firebase
       const firebaseConfig = {
         apiKey: "AIzaSyA7RLRXJie8CuieGbCw55OHUZuCkjfcbgY",
@@ -22,32 +23,50 @@
         appId: "1:524265966270:web:45b0a5e5853ec47437acef",
         measurementId: "G-6FP4EJR4XL",
       };
-
+    
       // Khởi tạo Firebase
       const app = initializeApp(firebaseConfig);
       const database = getDatabase(app);
-
+    
+      // Hàm tạo ID duy nhất dựa trên thời gian
+      function generateTimeBasedID() {
+        const now = new Date();
+        const datePart =
+          now.getFullYear().toString() +
+          (now.getMonth() + 1).toString().padStart(2, '0') +
+          now.getDate().toString().padStart(2, '0') +
+          now.getHours().toString().padStart(2, '0') +
+          now.getMinutes().toString().padStart(2, '0') +
+          now.getSeconds().toString().padStart(2, '0');
+        const randomPart = Math.floor(Math.random() * 900 + 100);
+        return datePart + randomPart.toString();
+      }
+    
       // Gửi dữ liệu về Firebase khi nhấn Submit
       document.getElementById("submitButton").onclick = function () {
         const foodSelections = document.querySelectorAll('input[name="food"]:checked');
         const newFoodName = document.getElementById("newFoodName").value;
-
+    
         const selectedFoods = Array.from(foodSelections).map(input => input.value);
-
+    
+        // Tạo ID mới cho dữ liệu
+        const id = generateTimeBasedID();
+    
         // Thêm dữ liệu vào Firebase Realtime Database
-        push(ref(database, 'food'), {
-          selectedFoods,
-          newFoodName
+        set(ref(database, 'food/' + id), { // Sử dụng set thay vì push và gắn ID thủ công
+          id: id, // Gắn ID duy nhất vào dữ liệu
+          selectedFoods: selectedFoods,
+          newFoodName: newFoodName || "Không nhập"
         })
           .then(() => {
             window.location.href = "dessert.html"; // Chuyển sang trang tiếp theo
           })
           .catch(error => {
-            console.error("Error submitting data: ", error);
+            console.error("Lỗi khi gửi dữ liệu: ", error);
           });
       };
     </script>
-  </head>
+    
   <body>
     <div id="foodquestion">
       <b>Chọn món mà bạn thích nèee?</b>
@@ -90,14 +109,14 @@
         </label>
       </div>
       <div class="food-item">
-        <img src="food/lauthai.jpeg" alt="Lẩu thái" />
+        <img src="food/lauthai.jpeg" alt="Lẩu Thái" />
         <label>
           <input type="checkbox" name="food" value="lauthai" />
-          Lẩu thái
+          Lẩu Thái
         </label>
       </div>
       <div class="food-item">
-        <img src="food/chaosuon.jpeg" alt="Cháo Sường" />
+        <img src="food/chaosuon.jpeg" alt="Cháo Sườn" />
         <label>
           <input type="checkbox" name="food" value="chaosuon" />
           Cháo Sườn
@@ -117,5 +136,7 @@
     </div>
 
     <button id="submitButton">Tiếp UWU</button>
+
+    <script src="js/script.js"></script>
   </body>
 </html>

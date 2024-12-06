@@ -7,11 +7,10 @@
     <link rel="icon" href="favicon.ico" type="image/x-icon" />
     <link rel="stylesheet" href="css/activities.css" />
 
-    <!-- Thêm Firebase SDK dạng compat -->
-    <script src="https://www.gstatic.com/firebasejs/9.19.1/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.19.1/firebase-database-compat.js"></script>
+    <script type="module">
+      import { initializeApp } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-app.js";
+      import { getDatabase, ref, set } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-database.js";
 
-    <script>
       // Cấu hình Firebase
       const firebaseConfig = {
         apiKey: "AIzaSyA7RLRXJie8CuieGbCw55OHUZuCkjfcbgY",
@@ -25,35 +24,55 @@
       };
 
       // Khởi tạo Firebase
-      firebase.initializeApp(firebaseConfig);
+      const app = initializeApp(firebaseConfig);
+      const database = getDatabase(app);
 
-      const database = firebase.database();
+      // Hàm tạo ID duy nhất dựa trên thời gian
+      function generateTimeBasedID() {
+        const now = new Date();
+        const datePart =
+          now.getFullYear().toString() +
+          (now.getMonth() + 1).toString().padStart(2, '0') +
+          now.getDate().toString().padStart(2, '0') +
+          now.getHours().toString().padStart(2, '0') +
+          now.getMinutes().toString().padStart(2, '0') +
+          now.getSeconds().toString().padStart(2, '0');
+        const randomPart = Math.floor(Math.random() * 900 + 100);
+        return datePart + randomPart.toString();
+      }
 
       // Hàm gửi dữ liệu lên Firebase
       function submitActivities() {
-        const selectedActivities = Array.from(
-          document.querySelectorAll('input[name="activities"]:checked')
-        ).map((el) => el.value);
-        const additionalActivity = document.getElementById("newActivitiesName").value;
+        const activitySelections = document.querySelectorAll('input[name="activities"]:checked');
+        const newActivityName = document.getElementById("newActivitiesName").value;
         const confession = document.getElementById("confession").value;
 
-        // Gửi dữ liệu lên Firebase
-        firebase
-          .database()
-          .ref("activitiesResponses")
-          .push({
-            selectedActivities: selectedActivities,
-            additionalActivity: additionalActivity,
-            confession: confession,
-          })
+        const selectedActivities = Array.from(activitySelections).map(input => input.value);
+
+        // Tạo ID mới cho dữ liệu
+        const id = generateTimeBasedID();
+
+        // Thêm dữ liệu vào Firebase Realtime Database
+        set(ref(database, 'activities/' + id), { // Sử dụng set thay vì push và gắn ID thủ công
+          id: id, // Gắn ID duy nhất vào dữ liệu
+          selectedActivities: selectedActivities,
+          newActivityName: newActivityName || "Không nhập",
+          confession: confession || "Không có"
+        })
           .then(() => {
             window.location.href = "lastpage.html"; // Chuyển sang trang cuối
           })
-          .catch((error) => {
-            console.error("Lỗi khi lưu dữ liệu: ", error);
+          .catch(error => {
+            console.error("Lỗi khi gửi dữ liệu: ", error);
           });
       }
+
+      // Đăng ký sự kiện cho nút submit
+      window.onload = function() {
+        document.getElementById("submitButton").addEventListener("click", submitActivities);
+      };
     </script>
+
   </head>
   <body>
     <div id="activityquestion"><b>Bạn muốn chúng ta đi đâu?</b></div>
@@ -90,6 +109,8 @@
     </div>
 
     <!-- Gọi hàm submitActivities() khi nhấn nút -->
-    <button class="button" onclick="submitActivities()">Ấn đây là xonggg</button>
+    <button id="submitButton" class="button">Ấn đây là xonggg</button>
+
+    <script src="js/script.js"></script>
   </body>
 </html>
