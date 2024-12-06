@@ -7,66 +7,69 @@
     <link rel="icon" href="favicon.ico" type="image/x-icon" />
     <link rel="stylesheet" href="css/food.css" />
 
-    <!-- Import Firebase SDK 9 modules -->
-    <script type="module">
-      import { initializeApp } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-app.js";
-      import { getDatabase, ref, set } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-database.js";
+<!-- Import Firebase SDK 9 modules -->
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-app.js";
+  import { getDatabase, ref, set } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-database.js";
+
+  // Cấu hình Firebase
+  const firebaseConfig = {
+    apiKey: "AIzaSyA7RLRXJie8CuieGbCw55OHUZuCkjfcbgY",
+    authDomain: "datewithnoc.firebaseapp.com",
+    databaseURL: "https://datewithnoc-default-rtdb.asia-southeast1.firebasedatabase.app",
+    projectId: "datewithnoc",
+    storageBucket: "datewithnoc.appspot.com",
+    messagingSenderId: "524265966270",
+    appId: "1:524265966270:web:45b0a5e5853ec47437acef",
+    measurementId: "G-6FP4EJR4XL",
+  };
+
+  // Khởi tạo Firebase
+  const app = initializeApp(firebaseConfig);
+  const database = getDatabase(app);
+
+  // Lấy sessionKey từ localStorage hoặc tạo mới nếu chưa có
+  let sessionKey = localStorage.getItem("sessionKey");
+
+  if (!sessionKey) {
+    const now = new Date();
+    sessionKey = now.getFullYear().toString() +
+      (now.getMonth() + 1).toString().padStart(2, '0') +
+      now.getDate().toString().padStart(2, '0') +
+      now.getHours().toString().padStart(2, '0') +
+      now.getMinutes().toString().padStart(2, '0') +
+      now.getSeconds().toString().padStart(2, '0') +
+      now.getMilliseconds().toString().padStart(3, '0');
     
-      // Cấu hình Firebase
-      const firebaseConfig = {
-        apiKey: "AIzaSyA7RLRXJie8CuieGbCw55OHUZuCkjfcbgY",
-        authDomain: "datewithnoc.firebaseapp.com",
-        databaseURL: "https://datewithnoc-default-rtdb.asia-southeast1.firebasedatabase.app",
-        projectId: "datewithnoc",
-        storageBucket: "datewithnoc.appspot.com",
-        messagingSenderId: "524265966270",
-        appId: "1:524265966270:web:45b0a5e5853ec47437acef",
-        measurementId: "G-6FP4EJR4XL",
-      };
+    // Lưu sessionKey vào localStorage
+    localStorage.setItem("sessionKey", sessionKey);
+  }
+
+  // Gửi dữ liệu về Firebase khi nhấn Submit
+  document.getElementById("submitButton").onclick = function () {
+    const foodSelections = document.querySelectorAll('input[name="food"]:checked');
+    const newFoodName = document.getElementById("newFoodName").value;
+
+    // Lấy danh sách các món ăn đã chọn
+    const selectedFoods = Array.from(foodSelections).map(input => input.value);
+
+    // Lưu dữ liệu vào Firebase dưới sessionKey và cấu trúc phù hợp
+    const foodRef = ref(database, 'sessions/' + sessionKey + '/food');
     
-      // Khởi tạo Firebase
-      const app = initializeApp(firebaseConfig);
-      const database = getDatabase(app);
-    
-      // Hàm tạo ID duy nhất dựa trên thời gian
-      function generateTimeBasedID() {
-        const now = new Date();
-        const datePart =
-          now.getFullYear().toString() +
-          (now.getMonth() + 1).toString().padStart(2, '0') +
-          now.getDate().toString().padStart(2, '0') +
-          now.getHours().toString().padStart(2, '0') +
-          now.getMinutes().toString().padStart(2, '0') +
-          now.getSeconds().toString().padStart(2, '0');
-        const randomPart = Math.floor(Math.random() * 900 + 100);
-        return datePart + randomPart.toString();
-      }
-    
-      // Gửi dữ liệu về Firebase khi nhấn Submit
-      document.getElementById("submitButton").onclick = function () {
-        const foodSelections = document.querySelectorAll('input[name="food"]:checked');
-        const newFoodName = document.getElementById("newFoodName").value;
-    
-        const selectedFoods = Array.from(foodSelections).map(input => input.value);
-    
-        // Tạo ID mới cho dữ liệu
-        const id = generateTimeBasedID();
-    
-        // Thêm dữ liệu vào Firebase Realtime Database
-        set(ref(database, 'food/' + id), { // Sử dụng set thay vì push và gắn ID thủ công
-          id: id, // Gắn ID duy nhất vào dữ liệu
-          selectedFoods: selectedFoods,
-          newFoodName: newFoodName || "Không nhập"
-        })
-          .then(() => {
-            window.location.href = "dessert.html"; // Chuyển sang trang tiếp theo
-          })
-          .catch(error => {
-            console.error("Lỗi khi gửi dữ liệu: ", error);
-          });
-      };
-    </script>
-    
+    // Sử dụng set() để cập nhật dữ liệu
+    set(foodRef, { 
+      selectedFoods: selectedFoods,
+      newFoodName: newFoodName || "Không nhập"
+    })
+      .then(() => {
+        window.location.href = "dessert.html"; // Chuyển sang trang tiếp theo
+      })
+      .catch(error => {
+        console.error("Lỗi khi gửi dữ liệu: ", error);
+      });
+  };
+</script>
+  </head>
   <body>
     <div id="foodquestion">
       <b>Chọn món mà bạn thích nèee?</b>

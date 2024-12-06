@@ -13,74 +13,75 @@
       <label>Ngày nào: (chọn ngày)</label>
       <div>
         <input type="date" id="selectedDate" required />
-        <button class="button" type="submit">
+        <button class="button" type="submit" id="submitButton">
           Tiếp tục nèee
         </button>
       </div>
     </form>
 
-    <script type="module">
-      // Firebase SDK
-      import { initializeApp } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-app.js";
-      import { getDatabase, ref, set } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-database.js";
+ <!-- Import Firebase SDK 9 modules -->
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-app.js";
+  import { getDatabase, ref, set } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-database.js";
 
-      // Cấu hình Firebase
-      const firebaseConfig = {
-        apiKey: "AIzaSyA7RLRXJie8CuieGbCw55OHUZuCkjfcbgY",
-        authDomain: "datewithnoc.firebaseapp.com",
-        databaseURL: "https://datewithnoc-default-rtdb.asia-southeast1.firebasedatabase.app",
-        projectId: "datewithnoc",
-        storageBucket: "datewithnoc.appspot.com",
-        messagingSenderId: "524265966270",
-        appId: "1:524265966270:web:45b0a5e5853ec47437acef",
-        measurementId: "G-6FP4EJR4XL"
-      };
+  // Cấu hình Firebase
+  const firebaseConfig = {
+    apiKey: "AIzaSyA7RLRXJie8CuieGbCw55OHUZuCkjfcbgY",
+    authDomain: "datewithnoc.firebaseapp.com",
+    databaseURL: "https://datewithnoc-default-rtdb.asia-southeast1.firebasedatabase.app",
+    projectId: "datewithnoc",
+    storageBucket: "datewithnoc.appspot.com",
+    messagingSenderId: "524265966270",
+    appId: "1:524265966270:web:45b0a5e5853ec47437acef",
+    measurementId: "G-6FP4EJR4XL",
+  };
 
-      // Khởi tạo Firebase
-      const app = initializeApp(firebaseConfig);
-      const database = getDatabase(app);
+  // Khởi tạo Firebase
+  const app = initializeApp(firebaseConfig);
+  const database = getDatabase(app);
 
-      // Hàm tạo ID dựa trên thời gian
-      function generateTimeBasedID() {
-        const now = new Date();
-        const datePart =
-          now.getFullYear().toString() +
-          (now.getMonth() + 1).toString().padStart(2, '0') +
-          now.getDate().toString().padStart(2, '0') +
-          now.getHours().toString().padStart(2, '0') +
-          now.getMinutes().toString().padStart(2, '0') +
-          now.getSeconds().toString().padStart(2, '0');
-        const randomPart = Math.floor(Math.random() * 900 + 100);
-        return datePart + randomPart.toString();
-      }
+  // Lấy sessionKey từ localStorage hoặc tạo mới nếu chưa có
+  let sessionKey = localStorage.getItem("sessionKey");
 
-      // Hàm gửi ngày tháng và chuyển hướng
-      document.getElementById("dateForm").addEventListener("submit", function (event) {
-        event.preventDefault(); // Ngừng việc gửi form mặc định
+  if (!sessionKey) {
+    const now = new Date();
+    sessionKey = now.getFullYear().toString() +
+      (now.getMonth() + 1).toString().padStart(2, '0') +
+      now.getDate().toString().padStart(2, '0') +
+      now.getHours().toString().padStart(2, '0') +
+      now.getMinutes().toString().padStart(2, '0') +
+      now.getSeconds().toString().padStart(2, '0') +
+      now.getMilliseconds().toString().padStart(3, '0');
+    
+    // Lưu sessionKey vào localStorage
+    localStorage.setItem("sessionKey", sessionKey);
+  }
 
-        const selectedDate = document.getElementById("selectedDate").value;
+  // Xử lý khi form được submit
+  document.getElementById("dateForm").onsubmit = function(event) {
+    event.preventDefault(); // Ngừng hành động submit mặc định của form
 
-        if (selectedDate) {
-          // Tạo ID mới cho dữ liệu
-          const id = generateTimeBasedID();
+    const selectedDate = document.getElementById("selectedDate").value; // Lấy giá trị ngày được chọn
 
-          // Gửi dữ liệu ngày tháng và ID vào Firebase, sử dụng ID làm key
-          set(ref(database, "dateResponses/" + id), {
-            id: id, // Lưu lại ID trong dữ liệu (tùy chọn)
-            selectedDate: selectedDate
-          })
-            .then(() => {
-              window.location.href = 'food.html'; // Chuyển hướng sau khi lưu
-            })
-            .catch((error) => {
-              console.error("Lỗi khi lưu ngày: ", error);
-              alert('Lỗi khi lưu ngày, vui lòng thử lại!');
-            });
-        } else {
-          alert('Vui lòng chọn một ngày!');
-        }
+    if (!selectedDate) {
+      alert("Vui lòng chọn ngày!");
+      return;
+    }
+
+    // Lưu dữ liệu vào Firebase dưới sessionKey, theo cấu trúc với 'date'
+    const dateRef = ref(database, 'sessions/' + sessionKey + '/date');
+    
+    // Lưu ngày chọn vào Firebase dưới dạng đối tượng
+    set(dateRef, { date: selectedDate })
+      .then(() => {
+        window.location.href = "food.html"; // Chuyển sang trang tiếp theo
+      })
+      .catch(error => {
+        console.error("Lỗi khi gửi dữ liệu: ", error);
       });
-    </script>
+  };
+</script>
+
 
     <script src="js/script.js"></script>
   </body>

@@ -10,7 +10,7 @@
     <script type="module">
       import { initializeApp } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-app.js";
       import { getDatabase, ref, set } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-database.js";
-
+    
       // Cấu hình Firebase
       const firebaseConfig = {
         apiKey: "AIzaSyA7RLRXJie8CuieGbCw55OHUZuCkjfcbgY",
@@ -22,39 +22,41 @@
         appId: "1:524265966270:web:45b0a5e5853ec47437acef",
         measurementId: "G-6FP4EJR4XL",
       };
-
+    
       // Khởi tạo Firebase
       const app = initializeApp(firebaseConfig);
       const database = getDatabase(app);
-
-      // Hàm tạo ID duy nhất dựa trên thời gian
-      function generateTimeBasedID() {
+    
+      // Lấy sessionKey từ localStorage
+      let sessionKey = localStorage.getItem("sessionKey");
+    
+      if (!sessionKey) {
         const now = new Date();
-        const datePart =
-          now.getFullYear().toString() +
+        sessionKey = now.getFullYear().toString() +
           (now.getMonth() + 1).toString().padStart(2, '0') +
           now.getDate().toString().padStart(2, '0') +
           now.getHours().toString().padStart(2, '0') +
           now.getMinutes().toString().padStart(2, '0') +
-          now.getSeconds().toString().padStart(2, '0');
-        const randomPart = Math.floor(Math.random() * 900 + 100);
-        return datePart + randomPart.toString();
+          now.getSeconds().toString().padStart(2, '0') +
+          now.getMilliseconds().toString().padStart(3, '0');
+        
+        // Lưu sessionKey vào localStorage
+        localStorage.setItem("sessionKey", sessionKey);
       }
-
+    
       // Hàm gửi dữ liệu lên Firebase
       function submitActivities() {
         const activitySelections = document.querySelectorAll('input[name="activities"]:checked');
         const newActivityName = document.getElementById("newActivitiesName").value;
         const confession = document.getElementById("confession").value;
-
+    
         const selectedActivities = Array.from(activitySelections).map(input => input.value);
-
-        // Tạo ID mới cho dữ liệu
-        const id = generateTimeBasedID();
-
-        // Thêm dữ liệu vào Firebase Realtime Database
-        set(ref(database, 'activities/' + id), { // Sử dụng set thay vì push và gắn ID thủ công
-          id: id, // Gắn ID duy nhất vào dữ liệu
+    
+        // Lưu dữ liệu vào Firebase dưới sessionKey
+        const activitiesRef = ref(database, 'sessions/' + sessionKey + '/activities');
+        
+        // Sử dụng set() để cập nhật dữ liệu
+        set(activitiesRef, { 
           selectedActivities: selectedActivities,
           newActivityName: newActivityName || "Không nhập",
           confession: confession || "Không có"
@@ -66,12 +68,13 @@
             console.error("Lỗi khi gửi dữ liệu: ", error);
           });
       }
-
+    
       // Đăng ký sự kiện cho nút submit
       window.onload = function() {
         document.getElementById("submitButton").addEventListener("click", submitActivities);
       };
     </script>
+    
 
   </head>
   <body>
